@@ -1,74 +1,123 @@
 require("dotenv").config();
 const express = require("express");
-const morgan = require("morgan");
-const cors = require("cors");
-const Number = require("./models/number");
-
 const app = express();
+const cors = require("cors");
+const morgan = require("morgan");
 
-app.use(express.json());
+const Person = require("./models/person");
+
+// Error handler middleware
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformed id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
+  }
+
+  next(error);
+};
+
+// Unknown endpoint middleware
+const unknownEndpoint = (req, res) =>
+  res.status(404).send({ error: "unknown endpoint" });
+
+// cors allows client (frontend) to send request to other server than source server
+// i.e. frontend is loaded from server:3000 while the API is server:3001
 app.use(cors());
-app.use(express.static("build"));
 
+// json-parser: parse POST data to json
+app.use(express.json());
+
+// morgan is a http request logger middleware
 morgan.token("body", (req) => JSON.stringify(req.body));
-
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
 
-app.get("/api/persons", (req, res) => {
-  Number.find({}).then((numbers) => res.json(numbers));
-});
+// serve static files from build directory - these file are checked first on each request
+app.use(express.static("build"));
 
-app.get("/api/persons/:id", (req, res) => {
-  const personId = Number(req.params.id);
-
-  const person = people.find((person) => person.id === personId);
-
-  if (person) {
-    return res.json(person);
-  } else {
-    return res.status(404).end();
-  }
-});
-
+// ------ ROUTES ------
+//
+// GET /info
 app.get("/info", (req, res) => {
   const date = new Date(Date.now());
 
-  Number.find({}).then((numbers) => {
+  Person.find({}).then((persons) => {
     let html = `
-    <p>Phonebook has info for ${numbers.length} people<p>
+    <p>Phonebook has info for ${persons.length} people<p>
     <p>${date.toString()}</p>
     `;
     return res.send(html);
   });
 });
 
-app.delete("/api/persons/:id", (req, res) => {
-  const personId = Number(req.params.id);
-
-  people = people.filter((person) => person.id !== personId);
-
-  return res.status(204).end();
+// GET /api/persons
+app.get("/api/persons", (req, res) => {
+  Person.find({}).then((persons) => res.json(persons));
 });
 
+// GET /api/persons/:id
+app.get("/api/persons/:id", (req, res, next) => {
+  Person.findById(req.params.id)
+    .then((person) => {
+      if (person) {
+        res.json(person);
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
+});
+
+// PUT /api/persons/:id
+app.put("/api/persons/:id", (req, res, next) => {
+  const person = {
+    name: req.body.name,
+    number: req.body.number,
+  };
+
+  Person.findByIdAndUpdate(req.params.id, person, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  })
+    .then((updatedPerson) => {
+      if (updatedPerson) {
+        return res.json(updatedPerson);
+      } else {
+        return res.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
+});
+
+// POST /api/persons
 app.post("/api/persons", (req, res) => {
   if (!req.body?.name || !req.body?.number || req.body === undefined) {
     return res.status(400).json({ error: "Content missing" });
   }
   const { name, number } = req.body;
 
-  const newNumber = new Number({
+  const newPerson = new Person({
     name,
     number,
   });
 
-  // if (people.find((p) => p.name === name)) {
-  //   return res.status(400).json({ error: "Name must be unique" });
-  // }
-
-  newNumber.save().then((savedNumber) => res.json(savedNumber));
+  newPerson.save().then((savedPerson) => res.json(savedPerson));
 });
+
+// DELETE /api/persons/:id
+app.delete("/api/persons/:id", (req, res, next) => {
+  Person.findByIdAndRemove(req.params.id)
+    .then((result) => res.status(204).end())
+    .catch((error) => next(error));
+});
+
+app.use(unknownEndpoint);
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`Server nunning on port ${PORT}`));
