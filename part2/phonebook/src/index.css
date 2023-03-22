@@ -1,6 +1,13 @@
 .info {
-  background: lightgrey;
   color: dodgerblue;
+}
+
+.error {
+  color: red;
+}
+
+.notification {
+  background: lightgrey;
   font-size: 24px;
   border: 1px solid black;
   border-radius: 5px;

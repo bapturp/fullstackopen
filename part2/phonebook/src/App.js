@@ -10,7 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [nameFilter, setNameFilter] = useState("");
-  const [infoMessage, setInfoMessage] = useState(null);
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     personsService
@@ -38,7 +38,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={infoMessage} />
+      <Notification notification={notification} />
       <Filter nameFilter={nameFilter} setNameFilter={setNameFilter} />
 
       <h2>add a new</h2>
@@ -49,7 +49,7 @@ const App = () => {
         setNewName={setNewName}
         newPhone={newPhone}
         setNewPhone={setNewPhone}
-        setInfoMessage={setInfoMessage}
+        setNotification={setNotification}
       />
 
       <h2>Numbers</h2>

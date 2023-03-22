@@ -8,11 +8,11 @@ const PersonForm = ({
   setNewPhone,
   persons,
   setPersons,
-  setInfoMessage,
+  setNotification,
 }) => {
-  const handleInfoMessage = (person) => {
-    setInfoMessage(`Added ${person.name}`);
-    setTimeout(() => setInfoMessage(null), 5000);
+  const handleInfoMessage = (message, severity) => {
+    setNotification({ message, severity });
+    setTimeout(() => setNotification(null), 5000);
   };
 
   const handlePersonChange = (event) => {
@@ -29,9 +29,11 @@ const PersonForm = ({
         .create(newPerson)
         .then((data) => {
           setPersons([...persons, data]);
-          handleInfoMessage(data);
+          handleInfoMessage(`Added ${data.name}`, "info");
         })
-        .catch((error) => console.error(error));
+        .catch((error) =>
+          handleInfoMessage(error.response.data.error, "error")
+        );
 
       setNewName("");
       setNewPhone("");
