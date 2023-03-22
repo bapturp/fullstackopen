@@ -1,15 +1,15 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 if (process.argv.length < 3) {
-  console.log("give password as argument");
+  console.log('give password as argument');
   process.exit(1);
 }
-const collectionName = "phonebook";
+const collectionName = 'phonebook';
 const password = process.argv[2];
 
 const url = `mongodb+srv://yo7AgqB4KMEo9TmHP4Wb:${password}@cluster1.xx6kbup.mongodb.net/${collectionName}?retryWrites=true&w=majority`;
 
-mongoose.set("strictQuery", false);
+mongoose.set('strictQuery', false);
 mongoose.connect(url);
 
 const numberSchema = new mongoose.Schema({
@@ -17,7 +17,7 @@ const numberSchema = new mongoose.Schema({
   number: String,
 });
 
-const Number = mongoose.model("Number", numberSchema);
+const Number = mongoose.model('Number', numberSchema);
 
 // const number = new Number({
 //   name: "Arto Hellas",
@@ -37,7 +37,7 @@ if (process.argv.length >= 5) {
   });
 
   new_number.save().then(() => {
-    console.log("number saved");
+    console.log('number saved');
     mongoose.connection.close();
   });
 } else {

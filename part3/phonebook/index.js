@@ -1,18 +1,18 @@
-require("dotenv").config();
-const express = require("express");
+require('dotenv').config();
+const express = require('express');
 const app = express();
-const cors = require("cors");
-const morgan = require("morgan");
+const cors = require('cors');
+const morgan = require('morgan');
 
-const Person = require("./models/person");
+const Person = require('./models/person');
 
 // Error handler middleware
 const errorHandler = (error, req, res, next) => {
   console.error(error.message);
 
-  if (error.name === "CastError") {
-    return res.status(400).send({ error: "malformed id" });
-  } else if (error.name === "ValidationError") {
+  if (error.name === 'CastError') {
+    return res.status(400).send({ error: 'malformed id' });
+  } else if (error.name === 'ValidationError') {
     return res.status(400).json({ error: error.message });
   }
 
@@ -21,7 +21,7 @@ const errorHandler = (error, req, res, next) => {
 
 // Unknown endpoint middleware
 const unknownEndpoint = (req, res) =>
-  res.status(404).send({ error: "unknown endpoint" });
+  res.status(404).send({ error: 'unknown endpoint' });
 
 // cors allows client (frontend) to send request to other server than source server
 // i.e. frontend is loaded from server:3000 while the API is server:3001
@@ -31,18 +31,18 @@ app.use(cors());
 app.use(express.json());
 
 // morgan is a http request logger middleware
-morgan.token("body", (req) => JSON.stringify(req.body));
+morgan.token('body', (req) => JSON.stringify(req.body));
 app.use(
-  morgan(":method :url :status :res[content-length] - :response-time ms :body")
+  morgan(':method :url :status :res[content-length] - :response-time ms :body')
 );
 
 // serve static files from build directory - these file are checked first on each request
-app.use(express.static("build"));
+app.use(express.static('build'));
 
 // ------ ROUTES ------
 //
 // GET /info
-app.get("/info", (req, res) => {
+app.get('/info', (req, res) => {
   const date = new Date(Date.now());
 
   Person.find({}).then((persons) => {
@@ -55,12 +55,12 @@ app.get("/info", (req, res) => {
 });
 
 // GET /api/persons
-app.get("/api/persons", (req, res) => {
+app.get('/api/persons', (req, res) => {
   Person.find({}).then((persons) => res.json(persons));
 });
 
 // GET /api/persons/:id
-app.get("/api/persons/:id", (req, res, next) => {
+app.get('/api/persons/:id', (req, res, next) => {
   Person.findById(req.params.id)
     .then((person) => {
       if (person) {
@@ -73,7 +73,7 @@ app.get("/api/persons/:id", (req, res, next) => {
 });
 
 // PUT /api/persons/:id
-app.put("/api/persons/:id", (req, res, next) => {
+app.put('/api/persons/:id', (req, res, next) => {
   const person = {
     name: req.body.name,
     number: req.body.number,
@@ -82,7 +82,7 @@ app.put("/api/persons/:id", (req, res, next) => {
   Person.findByIdAndUpdate(req.params.id, person, {
     new: true,
     runValidators: true,
-    context: "query",
+    context: 'query',
   })
     .then((updatedPerson) => {
       if (updatedPerson) {
@@ -95,9 +95,9 @@ app.put("/api/persons/:id", (req, res, next) => {
 });
 
 // POST /api/persons
-app.post("/api/persons", (req, res, next) => {
+app.post('/api/persons', (req, res, next) => {
   if (!req.body?.name || !req.body?.number || req.body === undefined) {
-    return res.status(400).json({ error: "Content missing" });
+    return res.status(400).json({ error: 'Content missing' });
   }
   const { name, number } = req.body;
 
@@ -113,9 +113,9 @@ app.post("/api/persons", (req, res, next) => {
 });
 
 // DELETE /api/persons/:id
-app.delete("/api/persons/:id", (req, res, next) => {
+app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
-    .then((result) => res.status(204).end())
+    .then(() => res.status(204).end())
     .catch((error) => next(error));
 });
 
