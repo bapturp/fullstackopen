@@ -11,8 +11,20 @@ mongoose
   .catch((err) => console.error(err));
 
 const personSchema = new mongoose.Schema({
-  name: { type: String, required: true, minLength: 3 },
-  number: { type: String, required: true },
+  name: {
+    type: String,
+    required: true,
+    minLength: 3,
+  },
+  number: {
+    type: String,
+    required: [true, "phone number is required."],
+    minLength: 5,
+    validate: {
+      validator: (number) => /^\d{2,3}-\d*$/.test(number), // 2-3 digit then dash then one or more digit
+      message: (props) => `${props.value} is not a valid phone number.`,
+    },
+  },
 });
 
 // renamed ._id to .id and cast it to a String
