@@ -1,4 +1,4 @@
-const dummy = (_) => 1;
+const dummy = (blogs) => 1;
 
 const totalLikes = (blogs) =>
   blogs.reduce((total, blog) => total + blog.likes, 0);
