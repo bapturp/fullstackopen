@@ -8,4 +8,24 @@ const favoriteBlog = (blogs) =>
     ? null
     : blogs.reduce((max, blog) => (blog.likes > max.likes ? blog : max));
 
-module.exports = { dummy, totalLikes, favoriteBlog };
+const mostBlogs = (blogs) => {
+  if (blogs.length === 0) return null;
+
+  const authorCount = {};
+
+  blogs.forEach((blog) => {
+    if (blog.author in authorCount) {
+      authorCount[blog.author].blogs++;
+    } else {
+      authorCount[blog.author] = { author: blog.author, blogs: 1 };
+    }
+  });
+
+  const authorCountList = [];
+  for (const [_, value] of Object.entries(authorCount)) {
+    authorCountList.push(value);
+  }
+  return authorCountList.sort((a, b) => b.blogs - a.blogs)[0];
+};
+
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs };
