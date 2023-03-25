@@ -82,7 +82,30 @@ test('a blog created without likes property should default to 0', async () => {
   expect(bowieBlog.likes).toEqual(0);
 });
 
-// 4.12
-// test('a blog without title cannot be added', async () => {});
+test('a blog without title cannot be added', async () => {
+  const newBlog = {
+    author: 'Djamil le Shlag',
+    url: 'http://djamilleshlag.com/',
+  };
+
+  await api.post('/api/blogs').send(newBlog).expect(400);
+
+  const response = await api.get('/api/blogs');
+
+  expect(response.body).toHaveLength(helper.initialBlogs.length);
+});
+
+test('a blog without url cannot be added', async () => {
+  const newBlog = {
+    author: 'Djamil le Shlag',
+    title: '49.3, le dialogue a coup de matraque',
+  };
+
+  await api.post('/api/blogs').send(newBlog).expect(400);
+
+  const response = await api.get('/api/blogs');
+
+  expect(response.body).toHaveLength(helper.initialBlogs.length);
+});
 
 afterAll(async () => await mongoose.connection.close());
