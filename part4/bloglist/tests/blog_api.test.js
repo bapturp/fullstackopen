@@ -45,6 +45,7 @@ test('a valid blog can be added', async () => {
     author: 'Alice',
     title: 'I like flowers',
     url: 'http://aliceinwonderland.com',
+    likes: 10,
   };
 
   await api
@@ -60,6 +61,25 @@ test('a valid blog can be added', async () => {
   // check that the title of blog is properly saved in db
   const titles = blogAtEnd.map((blog) => blog.title);
   expect(titles).toContain(helper.initialBlogs[0].title);
+});
+
+test('a blog created without likes property should default to 0', async () => {
+  const newBlog = {
+    author: 'David Bowie',
+    title: 'Let all the children boogie',
+    url: 'http://dbowie.com',
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const blogAtEnd = await helper.blogsInDb();
+  const bowieBlog = blogAtEnd.find((blog) => blog.author === newBlog.author);
+
+  expect(bowieBlog.likes).toEqual(0);
 });
 
 // 4.12
