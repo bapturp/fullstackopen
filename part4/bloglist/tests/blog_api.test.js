@@ -1,15 +1,32 @@
 const supertest = require('supertest');
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const helper = require('./test_helper');
 const app = require('../app');
 const api = supertest(app);
 
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 beforeEach(async () => {
+  await User.deleteMany({});
+
+  for (let user of helper.initialUsers) {
+    const passwordHash = await bcrypt.hash(user.password, 10);
+    user = { ...user, passwordHash };
+    delete user.password;
+    const userObject = new User(user);
+    await userObject.save();
+  }
+
   await Blog.deleteMany({});
 
-  for (const blog of helper.initialBlogs) {
+  const user = await User.findOne({
+    username: helper.initialUsers[0].username,
+  });
+
+  for (let blog of helper.initialBlogs) {
+    blog.user = user._id;
     const blogObject = new Blog(blog);
     await blogObject.save();
   }
@@ -75,11 +92,15 @@ describe('addition of a new blog', () => {
       author: 'Alice',
       title: 'I like flowers',
       url: 'http://aliceinwonderland.com',
-      likes: 10,
     };
+
+    const user = await User.findOne({});
+
+    const token = helper.getToken(user);
 
     await api
       .post('/api/blogs')
+      .set({ Authorization: `Bearer: ${token}` })
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -100,8 +121,13 @@ describe('addition of a new blog', () => {
       url: 'http://dbowie.com',
     };
 
+    const user = await User.findOne({});
+
+    const token = helper.getToken(user);
+
     await api
       .post('/api/blogs')
+      .set({ Authorization: `Bearer: ${token}` })
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -118,7 +144,15 @@ describe('addition of a new blog', () => {
       url: 'http://djamilleshlag.com/',
     };
 
-    await api.post('/api/blogs').send(newBlog).expect(400);
+    const user = await User.findOne({});
+
+    const token = helper.getToken(user);
+
+    await api
+      .post('/api/blogs')
+      .set({ Authorization: `Bearer: ${token}` })
+      .send(newBlog)
+      .expect(400);
 
     const response = await api.get('/api/blogs');
 
@@ -131,7 +165,15 @@ describe('addition of a new blog', () => {
       title: '49.3, le dialogue a coup de matraque',
     };
 
-    await api.post('/api/blogs').send(newBlog).expect(400);
+    const user = await User.findOne({});
+
+    const token = helper.getToken(user);
+
+    await api
+      .post('/api/blogs')
+      .set({ Authorization: `Bearer: ${token}` })
+      .send(newBlog)
+      .expect(400);
 
     const response = await api.get('/api/blogs');
 
@@ -141,17 +183,31 @@ describe('addition of a new blog', () => {
 
 describe('deletion of a blog', () => {
   test('succeeds with status code 204 if id is valid', async () => {
-    const blogsAtStart = await helper.blogsInDb();
-    const blogToDelete = blogsAtStart[0];
+    const newBlog = {
+      author: 'Alice',
+      title: 'I like flowers',
+      url: 'http://aliceinwonderland.com',
+    };
 
-    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+    const user = await User.findOne({});
+    newBlog.user = user._id.toString();
+
+    const blog = new Blog(newBlog);
+    await blog.save();
+
+    const token = helper.getToken(user);
+
+    await api
+      .delete(`/api/blogs/${blog.id}`)
+      .set({ Authorization: `Bearer: ${token}` })
+      .expect(204);
 
     const blogsAtEnd = await helper.blogsInDb();
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
 
     const titles = blogsAtEnd.map((blog) => blog.title);
 
-    expect(titles).not.toContain(blogToDelete.title);
+    expect(titles).not.toContain(newBlog.title);
   });
 
   test('fails with statuscode 400 if id is invalid', async () => {
