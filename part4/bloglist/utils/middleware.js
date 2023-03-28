@@ -30,6 +30,21 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 
-const middleware = { requestLogger, unknownEndpoint, errorHandler };
+const tokenExtractor = (request, response, next) => {
+  const authorization = request.get('authorization');
+
+  if (authorization?.startsWith('Bearer: ')) {
+    request.token = authorization.replace('Bearer: ', '');
+  }
+
+  next();
+};
+
+const middleware = {
+  requestLogger,
+  unknownEndpoint,
+  errorHandler,
+  tokenExtractor,
+};
 
 module.exports = middleware;
