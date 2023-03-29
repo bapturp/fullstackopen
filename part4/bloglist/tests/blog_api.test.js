@@ -66,6 +66,7 @@ describe('viewing a specific blog', () => {
     const blogsAtStart = await helper.blogsInDb();
 
     const blogToView = blogsAtStart[0];
+    blogToView.user.id = blogToView.user.id.toString();
 
     const resultBlog = await api
       .get(`/api/blogs/${blogToView.id}`)
@@ -183,14 +184,17 @@ describe('addition of a new blog', () => {
 
 describe('deletion of a blog', () => {
   test('succeeds with status code 204 if id is valid', async () => {
+    const user = await User.findOne({
+      username: helper.initialUsers[0].username,
+    });
+
     const newBlog = {
       author: 'Alice',
       title: 'I like flowers',
       url: 'http://aliceinwonderland.com',
     };
 
-    const user = await User.findOne({});
-    newBlog.user = user._id.toString();
+    newBlog.user = user._id;
 
     const blog = new Blog(newBlog);
     await blog.save();
@@ -198,12 +202,12 @@ describe('deletion of a blog', () => {
     const token = helper.getToken(user);
 
     await api
-      .delete(`/api/blogs/${blog.id}`)
+      .delete(`/api/blogs/${blog._id.toString()}`)
       .set({ Authorization: `Bearer: ${token}` })
       .expect(204);
 
     const blogsAtEnd = await helper.blogsInDb();
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
 
     const titles = blogsAtEnd.map((blog) => blog.title);
 
