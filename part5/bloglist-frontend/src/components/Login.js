@@ -1,4 +1,5 @@
 import loginService from "../services/login";
+import blogService from "../services/blogs";
 
 const Login = ({ username, setUsername, password, setPassword, setUser }) => {
   const handleLogin = async (event) => {
@@ -8,6 +9,8 @@ const Login = ({ username, setUsername, password, setPassword, setUser }) => {
       const user = await loginService.login({ username, password });
 
       window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
+
+      blogService.setToken(user.token);
 
       setUser(user);
       setUsername("");
@@ -33,7 +36,7 @@ const Login = ({ username, setUsername, password, setPassword, setUser }) => {
         <div>
           password
           <input
-            type="text"
+            type="password"
             value={password}
             name="Password"
             onChange={({ target }) => setPassword(target.value)}

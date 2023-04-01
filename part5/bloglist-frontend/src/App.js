@@ -1,16 +1,21 @@
-import { useState, useEffect } from "react";
-import Blog from "./components/Blog";
+import { useEffect, useState } from "react";
+import Blogs from "./components/Blogs";
 import Login from "./components/Login";
 import blogService from "./services/blogs";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    const loggedInUserJSON = window.localStorage.getItem("loggedBlogappUser");
+    if (loggedInUserJSON) {
+      const user = JSON.parse(loggedInUserJSON);
+      setUser(user);
+
+      blogService.setToken(user.token);
+    }
   }, []);
 
   if (user === null) {
@@ -25,14 +30,7 @@ const App = () => {
     );
   }
 
-  return (
-    <div>
-      <h2>blogs</h2>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
-    </div>
-  );
+  return <Blogs user={user} />;
 };
 
 export default App;

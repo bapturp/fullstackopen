@@ -101,7 +101,7 @@ describe('addition of a new blog', () => {
 
     await api
       .post('/api/blogs')
-      .set({ Authorization: `Bearer: ${token}` })
+      .set({ Authorization: `Bearer ${token}` })
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -128,7 +128,7 @@ describe('addition of a new blog', () => {
 
     await api
       .post('/api/blogs')
-      .set({ Authorization: `Bearer: ${token}` })
+      .set({ Authorization: `Bearer ${token}` })
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -151,7 +151,7 @@ describe('addition of a new blog', () => {
 
     await api
       .post('/api/blogs')
-      .set({ Authorization: `Bearer: ${token}` })
+      .set({ Authorization: `Bearer ${token}` })
       .send(newBlog)
       .expect(400);
 
@@ -172,7 +172,7 @@ describe('addition of a new blog', () => {
 
     await api
       .post('/api/blogs')
-      .set({ Authorization: `Bearer: ${token}` })
+      .set({ Authorization: `Bearer ${token}` })
       .send(newBlog)
       .expect(400);
 
@@ -203,7 +203,7 @@ describe('deletion of a blog', () => {
 
     await api
       .delete(`/api/blogs/${blog._id.toString()}`)
-      .set({ Authorization: `Bearer: ${token}` })
+      .set({ Authorization: `Bearer ${token}` })
       .expect(204);
 
     const blogsAtEnd = await helper.blogsInDb();
