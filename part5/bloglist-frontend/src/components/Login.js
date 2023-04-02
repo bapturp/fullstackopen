@@ -1,7 +1,22 @@
 import loginService from "../services/login";
 import blogService from "../services/blogs";
+import Notification from "./Notification";
 
-const Login = ({ username, setUsername, password, setPassword, setUser }) => {
+const Login = ({
+  username,
+  setUsername,
+  password,
+  setPassword,
+  setUser,
+  notification,
+  setNotification,
+}) => {
+  const handleInfoMessage = (message, severity) => {
+    console.log("notification send");
+    setNotification({ message, severity });
+    setTimeout(() => setNotification(null), 5000);
+  };
+
   const handleLogin = async (event) => {
     event.preventDefault();
 
@@ -16,13 +31,14 @@ const Login = ({ username, setUsername, password, setPassword, setUser }) => {
       setUsername("");
       setPassword("");
     } catch (exeption) {
-      console.error("Wrong credential", exeption);
+      handleInfoMessage(exeption.response.data.error, "error");
     }
   };
 
   return (
     <div>
       <h2>Login to application</h2>
+      <Notification notification={notification} />
       <form onSubmit={handleLogin}>
         <div>
           username

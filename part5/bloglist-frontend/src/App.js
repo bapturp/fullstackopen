@@ -27,6 +27,8 @@ const App = () => {
         password={password}
         setPassword={setPassword}
         setUser={setUser}
+        notification={notification}
+        setNotification={setNotification}
       />
     );
   }
