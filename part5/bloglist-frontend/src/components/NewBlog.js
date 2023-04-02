@@ -1,10 +1,15 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
 
-const NewBlog = ({ blogs, setBlogs }) => {
+const NewBlog = ({ blogs, setBlogs, setNotification }) => {
   const [newTitle, setNewTitle] = useState("");
   const [newAuthor, setNewAuthor] = useState("");
   const [newUrl, setNewUrl] = useState("");
+
+  const handleInfoMessage = (message, severity) => {
+    setNotification({ message, severity });
+    setTimeout(() => setNotification(null), 5000);
+  };
 
   const addBlog = (event) => {
     event.preventDefault();
@@ -15,12 +20,20 @@ const NewBlog = ({ blogs, setBlogs }) => {
       url: newUrl,
     };
 
-    blogService.create(blogObject).then((returnedBlog) => {
-      setBlogs([...blogs, returnedBlog]);
-      setNewTitle("");
-      setNewAuthor("");
-      setNewUrl("");
-    });
+    blogService
+      .create(blogObject)
+      .then((returnedBlog) => {
+        setBlogs([...blogs, returnedBlog]);
+        setNewTitle("");
+        setNewAuthor("");
+        setNewUrl("");
+        handleInfoMessage(
+          `a new blog ${blogObject.title} by ${blogObject.author} added`
+        );
+      })
+      .catch((error) => {
+        handleInfoMessage(error.response.data.error, "error");
+      });
   };
 
   return (
