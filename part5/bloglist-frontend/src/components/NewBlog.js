@@ -24,6 +24,7 @@ const NewBlog = ({ blogs, setBlogs, setNotification, blogFormRef }) => {
       .create(blogObject)
       .then((returnedBlog) => {
         setBlogs([...blogs, returnedBlog]);
+        console.log(returnedBlog);
         setNewTitle("");
         setNewAuthor("");
         setNewUrl("");
