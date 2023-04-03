@@ -1,7 +1,7 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
 
-const NewBlog = ({ blogs, setBlogs, setNotification }) => {
+const NewBlog = ({ blogs, setBlogs, setNotification, blogFormRef }) => {
   const [newTitle, setNewTitle] = useState("");
   const [newAuthor, setNewAuthor] = useState("");
   const [newUrl, setNewUrl] = useState("");
@@ -30,6 +30,7 @@ const NewBlog = ({ blogs, setBlogs, setNotification }) => {
         handleInfoMessage(
           `a new blog ${blogObject.title} by ${blogObject.author} added`
         );
+        blogFormRef.current.toggleVisibility();
       })
       .catch((error) => {
         handleInfoMessage(error.response.data.error, "error");
@@ -39,27 +40,33 @@ const NewBlog = ({ blogs, setBlogs, setNotification }) => {
   return (
     <div>
       <form onSubmit={addBlog}>
-        <label htmlFor="new-author">Author</label>
-        <input
-          type="text"
-          name="new-author"
-          value={newAuthor}
-          onChange={(event) => setNewAuthor(event.target.value)}
-        />
-        <label htmlFor="new-title">Title</label>
-        <input
-          type="text"
-          name="new-title"
-          value={newTitle}
-          onChange={(event) => setNewTitle(event.target.value)}
-        />
-        <label htmlFor="new-url">URL</label>
-        <input
-          type="text"
-          name="new-url"
-          value={newUrl}
-          onChange={(event) => setNewUrl(event.target.value)}
-        />
+        <div>
+          <label htmlFor="new-title">title:</label>
+          <input
+            type="text"
+            name="new-title"
+            value={newTitle}
+            onChange={(event) => setNewTitle(event.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="new-author">author:</label>
+          <input
+            type="text"
+            name="new-author"
+            value={newAuthor}
+            onChange={(event) => setNewAuthor(event.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="new-url">url:</label>
+          <input
+            type="text"
+            name="new-url"
+            value={newUrl}
+            onChange={(event) => setNewUrl(event.target.value)}
+          />
+        </div>
         <button>Create</button>
       </form>
     </div>
