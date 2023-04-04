@@ -81,7 +81,7 @@ blogsRouter.put('/:id', async (request, response) => {
   );
 
   if (updatedBlog) {
-    response.status(204).send(updatedBlog);
+    response.status(204).send(); // 204 is NO CONTENT, .send() won't send any data
   } else {
     response.status(404).send();
   }

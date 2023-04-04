@@ -1,6 +1,7 @@
 import { useState } from "react";
+import blogService from "../services/blogs";
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, setBlogs, blogs }) => {
   const [showDetails, setShowDetails] = useState(false);
 
   const blogStyle = {
@@ -9,6 +10,25 @@ const Blog = ({ blog }) => {
     border: "solid",
     borderWidth: 1,
     marginBottom: 5,
+  };
+
+  const handleLike = () => {
+    const modifiedLikes = {
+      likes: blog.likes + 1,
+    };
+
+    blogService.update(blog.id, modifiedLikes).then(() => {
+      setBlogs(
+        blogs.map((b) => {
+          if (b.id === blog.id) {
+            b.likes++;
+            return b;
+          } else {
+            return b;
+          }
+        })
+      );
+    });
   };
 
   if (!showDetails) {
@@ -30,7 +50,7 @@ const Blog = ({ blog }) => {
       </p>
       <a href={blog.url}>{blog.url}</a>
       <p>
-        likes {blog.likes} <button>like</button>
+        likes {blog.likes} <button onClick={handleLike}>like</button>
       </p>
       <p>{blog.user?.name !== undefined ? blog.user.name : null}</p>
     </div>
