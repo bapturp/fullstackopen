@@ -26,6 +26,11 @@ const update = (id, updatedObject) => {
   return axios.put(`${baseUrl}/${id}`, updatedObject, config);
 };
 
-const blogService = { getAll, setToken, create, update };
+const remove = (id) => {
+  const config = { headers: { Authorization: token } };
+  return axios.delete(`${baseUrl}/${id}`, config);
+};
+
+const blogService = { getAll, setToken, create, update, remove };
 
 export default blogService;

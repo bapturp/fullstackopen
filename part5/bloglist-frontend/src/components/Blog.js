@@ -31,6 +31,14 @@ const Blog = ({ blog, setBlogs, blogs }) => {
     });
   };
 
+  const handleDelete = () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      blogService.remove(blog.id).then(() => {
+        setBlogs(blogs.filter((b) => b.id !== blog.id));
+      });
+    }
+  };
+
   if (!showDetails) {
     return (
       <div style={blogStyle}>
@@ -53,6 +61,7 @@ const Blog = ({ blog, setBlogs, blogs }) => {
         likes {blog.likes} <button onClick={handleLike}>like</button>
       </p>
       <p>{blog.user?.name !== undefined ? blog.user.name : null}</p>
+      <button onClick={handleDelete}>remove</button>
     </div>
   );
 };
