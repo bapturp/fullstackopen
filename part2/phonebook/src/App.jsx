@@ -19,7 +19,11 @@ const App = () => {
       <Filter setSearch={setSearch} search={search} />
       <PersonForm persons={persons} setPersons={setPersons} />
       <h2>Numbers</h2>
-      <Persons persons={persons} search={search}></Persons>
+      <Persons
+        persons={persons}
+        search={search}
+        setPersons={setPersons}
+      ></Persons>
     </div>
   )
 }
