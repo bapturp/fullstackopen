@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import axios from 'axios'
 
-const PersonForm = ({ setPersons }) => {
+const PersonForm = ({ setPersons, persons }) => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
 
@@ -14,6 +15,7 @@ const PersonForm = ({ setPersons }) => {
 
   const handleSetPerson = (event) => {
     event.preventDefault()
+
     const newPerson = {
       name: newName,
       number: newNumber,
@@ -25,7 +27,10 @@ const PersonForm = ({ setPersons }) => {
         return
       }
     }
-    setPersons([...persons, newPerson])
+
+    axios.post('http://localhost:3001/persons', newPerson).then((response) => {
+      setPersons(persons.concat(response.data))
+    })
   }
 
   return (

@@ -4,12 +4,13 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 
+const baseURL = 'http://localhost:3001/persons'
+
 const App = () => {
   const [persons, setPersons] = useState([])
+
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then((response) => setPersons(response.data))
+    axios.get(baseURL).then((response) => setPersons(response.data))
   }, [])
 
   const [search, setSearch] = useState('')
