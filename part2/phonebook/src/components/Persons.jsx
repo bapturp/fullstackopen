@@ -3,7 +3,11 @@ import notification from '../helpers/notification'
 
 const Persons = ({ search, persons, setPersons, setNotification }) => {
   const personsToShow =
-    search === '' ? persons : persons.filter((p) => p.name.includes(search))
+    search === ''
+      ? persons
+      : persons.filter((p) =>
+          p.name.toLowerCase().includes(search.toLowerCase())
+        )
 
   const handleDelete = (person) => {
     if (window.confirm(`Do you want to delete ${person.name}`)) {
