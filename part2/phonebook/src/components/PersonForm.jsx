@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import personService from '../services/persons'
+import notification from '../helpers/notification'
 
-const PersonForm = ({ setPersons, persons }) => {
+const PersonForm = ({ setPersons, persons, setNotification }) => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
 
@@ -40,7 +41,11 @@ const PersonForm = ({ setPersons, persons }) => {
           }
         } else {
           // user already exists and the number is the same
-          alert(`${newPerson.name} is already added to the phonebook.`)
+          notification(
+            setNotification,
+            'info',
+            `${newPerson.name} is already added to the phonebook.`
+          )
         }
         return
       }
@@ -48,6 +53,7 @@ const PersonForm = ({ setPersons, persons }) => {
 
     personService.create(newPerson).then((response) => {
       setPersons(persons.concat(response.data))
+      notification(setNotification, 'success', `Added ${newPerson.name}`)
     })
   }
 
