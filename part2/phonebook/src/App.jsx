@@ -30,7 +30,12 @@ const App = () => {
         setNotification={setNotification}
       />
       <h2>Numbers</h2>
-      <Persons persons={persons} search={search} setPersons={setPersons} />
+      <Persons
+        persons={persons}
+        search={search}
+        setPersons={setPersons}
+        setNotification={setNotification}
+      />
     </div>
   )
 }
