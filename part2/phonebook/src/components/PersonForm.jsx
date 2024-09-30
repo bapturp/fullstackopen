@@ -21,9 +21,27 @@ const PersonForm = ({ setPersons, persons }) => {
       number: newNumber,
     }
 
+    // Check if the person already exists
     for (const person of persons) {
       if (person.name === newPerson.name) {
-        alert(`${newPerson.name} is already added to the phonebook`)
+        if (person.number !== newPerson.number) {
+          // User already exists but the number is different, suggest to replace the number
+          const confirm = window.confirm(
+            `${newPerson.name} is already added to the phonebook, replace the old number with a new one?`
+          )
+          if (confirm) {
+            personService.update(person.id, newPerson).then((response) => {
+              setPersons(
+                persons
+                  .filter((person) => person.name != newPerson.name)
+                  .concat(response.data)
+              )
+            })
+          }
+        } else {
+          // user already exists and the number is the same
+          alert(`${newPerson.name} is already added to the phonebook.`)
+        }
         return
       }
     }
@@ -35,17 +53,19 @@ const PersonForm = ({ setPersons, persons }) => {
 
   return (
     <>
-      <h2>add a new</h2>
+      <h2>Add a new</h2>
       <form>
         <div>
-          name: <input onChange={handleNewName} value={newName}></input>
+          <label>Name:</label>
+          <input onChange={handleNewName} value={newName}></input>
         </div>
         <div>
-          number: <input onChange={handleNewNumber} value={newNumber}></input>
+          <label>Number:</label>
+          <input onChange={handleNewNumber} value={newNumber}></input>
         </div>
         <div>
           <button type="submit" onClick={handleSetPerson}>
-            add
+            Add
           </button>
         </div>
       </form>

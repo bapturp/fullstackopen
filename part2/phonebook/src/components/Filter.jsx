@@ -4,7 +4,8 @@ const Filter = ({ setSearch, search }) => {
   }
   return (
     <div>
-      filter shown with <input onChange={handleSearch} value={search}></input>
+      <label>Filter shown with:</label>
+      <input onChange={handleSearch} value={search}></input>
     </div>
   )
 }

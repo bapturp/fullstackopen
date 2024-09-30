@@ -13,14 +13,26 @@ const Persons = ({ search, persons, setPersons }) => {
   }
 
   return (
-    <>
-      {personsToShow.map((person) => (
-        <div key={person.id}>
-          {person.name} {person.number}
-          <button onClick={() => handleDelete(person)}>delete</button>
-        </div>
-      ))}
-    </>
+    <table>
+      <thead>
+        <tr>
+          <td>Name</td>
+          <td>Number</td>
+          <td></td>
+        </tr>
+      </thead>
+      <tbody>
+        {personsToShow.map((person) => (
+          <tr key={person.id}>
+            <td>{person.name}</td>
+            <td>{person.number}</td>
+            <td>
+              <button onClick={() => handleDelete(person)}>delete</button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   )
 }
 

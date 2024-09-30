@@ -15,7 +15,7 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
       <Filter setSearch={setSearch} search={search} />
       <PersonForm persons={persons} setPersons={setPersons} />
       <h2>Numbers</h2>
