@@ -62,11 +62,11 @@ const PersonForm = ({ setPersons, persons, setNotification }) => {
       <h2>Add a new</h2>
       <form>
         <div>
-          <label>Name:</label>
+          <label>Name</label>
           <input onChange={handleNewName} value={newName}></input>
         </div>
         <div>
-          <label>Number:</label>
+          <label>Number</label>
           <input onChange={handleNewNumber} value={newNumber}></input>
         </div>
         <div>

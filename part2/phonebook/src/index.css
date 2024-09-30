@@ -1,9 +1,32 @@
+html {
+    max-width: 32em;
+    height: 100vh;
+    margin: 0 auto;
+}
+
+
 body {
     font-family: Helvetica, Arial, sans-serif;
 }
 
 h1, h2, h3 {
     font-family: Georgia, serif;
+}
+
+table {
+    width: 100%;
+}
+
+thead {
+    font-weight: bold;
+}
+
+label {
+    display: block;
+}
+
+input {
+    width: 100%;
 }
 
 .alert {
