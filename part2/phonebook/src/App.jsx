@@ -16,7 +16,10 @@ const App = () => {
   })
 
   useEffect(() => {
-    personService.getAll().then((response) => setPersons(response.data))
+    personService
+      .getAll()
+      .then((response) => setPersons(response.data))
+      .catch((error) => console.log(error))
   }, [])
 
   return (
