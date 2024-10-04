@@ -1,3 +1,6 @@
 [submodule "part3/phonebook"]
 	path = part3/phonebook
 	url = https://github.com/bapturp/phonebook.git
+[submodule "part4/bloglist"]
+	path = part4/bloglist
+	url = https://github.com/bapturp/bloglist.git
