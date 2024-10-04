@@ -51,10 +51,15 @@ const PersonForm = ({ setPersons, persons, setNotification }) => {
       }
     }
 
-    personService.create(newPerson).then((response) => {
-      setPersons(persons.concat(response.data))
-      notification(setNotification, 'success', `Added ${newPerson.name}`)
-    })
+    personService
+      .create(newPerson)
+      .then((response) => {
+        setPersons(persons.concat(response.data))
+        notification(setNotification, 'success', `Added ${newPerson.name}`)
+      })
+      .catch((error) =>
+        notification(setNotification, 'danger', error.response.data.error)
+      )
   }
 
   return (
