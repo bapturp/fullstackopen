@@ -14,7 +14,8 @@ const Persons = ({ search, persons, setPersons, setNotification }) => {
       personService
         .remove(person.id)
         .then((response) => {
-          setPersons(persons.filter((p) => p.id !== response.data.id))
+          console.log(response)
+          setPersons(persons.filter((p) => p.id !== person.id))
         })
         .catch((error) => {
           if (error.response.status === 404) {
